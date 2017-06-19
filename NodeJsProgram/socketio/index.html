@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Bienvenue sur Socket.io</title>
+    </head>
+
+    <body>
+        <h1>Communication avec socket.io !</h1>
+        <!-- Socket io se doit tout d'abord de faire une connexion avec le serveur via
+        l'activation de son script, ainsi que d'un code contenant simplement l'adresse
+      du serveur cible.-->
+        <button value="Emmerder le serveur xD" id="poke">Embêter le serveur xD</button>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:8080');
+            /* ici on écoute le "message", et dès qu'il est envoyé, on peut le
+            réceptionner ici. A ce moment absolument rien nous interdit
+            de le caler dans notre HTML*/
+            socket.on('message',function(message){
+              alert('Le serveur a un message pour vous : ' + message);
+            });
+            var pseudo = prompt('Quel est votre pseudo ?');
+            socket.emit('pseudonyme',pseudo);
+            /*ici on émet un message, dès le clic sur le bouton :D */
+            $("#poke").click(function(){
+              socket.emit("message","Emmerdement Par :");
+            })
+        </script>
+    </body>
+</html>

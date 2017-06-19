@@ -1,0 +1,13 @@
+<!--  Par défaut les vues générées, doivent être dans le dossier views -->
+
+<h1>Bienvenue dans les salles d'entraînement</h1>
+
+<p>Vous avez choisi la salle n°<%= numsalle %></p>
+
+<h1>La liste des héros de la salle <%= numsalle%>  est la suivante </h1>
+
+<p><%
+    for(var i = 1 ; i <= noms.length ; i++) {
+    %>
+    <%= noms %>
+<% } %></p>
