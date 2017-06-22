@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Des films Express</title>
+  <link rel="stylesheet" href="../public/css/style.css">
+  <link rel="stylesheet" href="../public/css/bootstrap/css/bootstrap.min.css">
+  < </head>
+
+    <body>
+      <% include ./partials/menu.ejs %>
+
+        <div class="container">
+          <div class="row">
+            <h1 class="col-md-12 col-lg-12"><%= title %></h1>
+            <p class="col-md-12">Nullam eros mi, mollis in sollicitudin non, tincidunt sed enim. Sed et felis metus, rhoncus ornare nibh. Ut at magna leo. Suspendisse egestas est ac dolor imperdiet pretium. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam porttitor,
+              erat sit amet venenatis luctus, augue libero ultrices quam, ut congue nisi risus eu purus. Cras semper consectetur elementum. Nulla vel aliquet libero. Vestibulum eget felis nec purus commodo convallis. Aliquam erat volutpat. </p>
+            <div class="row">
+              <div class="col-md-1">
+                <p><b>Liste :</b></p>
+              </div>
+              <div class="col-md-11 list-films">
+                <% for(film of films) {%>
+                  <div>
+                    <%= film.title %>
+                  </div>
+                  <% } %>
+              </div>
+            </div>
+            <div class="row">
+              <form>
+                <label for="title">titre</label>
+                <input type="text" name="title" id="title">
+                <label for="year">Année</label>
+                <input type="text" name="year" id="year">
+                <button type="submit">Ajouter</button>
+                <form>
+            </div>
+          </div>
+          <% include ./partials/footer.ejs %>
+
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+            <script type="text/javascript" src="../public/css/bootstrap/js/bootstrap.min.js"></script>
+
+            <script type="text/javascript">
+              const form = document.querySelector('form');
+              $('form').on('submit', function(event) {
+                event.preventDefault();
+                console.log($('#year').val());
+                $.ajax({
+                  type: "POST",
+                  url: "/films",
+                  data: {
+                    title: $('#title').val(),
+                    year: $('#year').val()
+                  },
+                  success: function(data, status) {
+                    console.log('succes')
+                    console.log('data = ', data);
+                    checkStatus(status);
+                  },
+                  dataType: 'text'
+                });
+
+                function checkStatus(status) {
+                  //if (status >= 200 && status < 300){
+                  let newFilmDiv = document.createElement('div');
+                  const filmTitle = document.getElementById('title').value;
+                  const filmYear = document.getElementById('year').value;
+                  newFilmDiv.innerHtml = `${filmTitle} ${filmYear}`;
+                  document.querySelector('list-films').appendChild(newFilmDiv);
+                };
+              });
+            </script>
+    </body>
+
+</html>
