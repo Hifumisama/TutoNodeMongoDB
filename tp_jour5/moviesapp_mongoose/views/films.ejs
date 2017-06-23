@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>Des films Express</title>
+    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/bootstrap/css/bootstrap.min.css">
+  </head>
+  <body>
+    <% include ./partials/menu.ejs %>
+      <div class="container">
+        <div class="row">
+          <h1 class="col-md-12 col-lg-12"><%= title %></h1>
+          <p class="col-md-12">Nullam eros mi, mollis in sollicitudin non, tincidunt sed enim.
+            Sed et felis metus, rhoncus ornare nibh. Ut at magna leo.
+            Suspendisse egestas est ac dolor imperdiet pretium.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Nam porttitor, erat sit amet venenatis luctus,
+            augue libero ultrices quam, ut congue nisi risus eu purus.
+            Cras semper consectetur elementum. Nulla vel aliquet libero.
+            Vestibulum eget felis nec purus commodo convallis. Aliquam erat volutpat. </p>
+        </div>
+        <div class="row">
+          <div class="col-md-12 list-films">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Titre</th>
+                  <th>Année</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tbody>
+            <% for(film of films) {%>
+
+                    <tr class="<%= film.id %>">
+                      <td class="_title-film">
+                        <span class="_show"><%= film.title %></span>
+                        <input type="text" class="_hide <%= film.id %>" value="<%= film.title %>"></input></td>
+                      <td class="_title-year">
+                        <span class="_show"><%= film.year %></span>
+                        <input type="text" class="_hide <%= film.id %>" value="<%= film.year %>"></input>
+                      </td>
+                      <td>
+                        <span class="pull-right">
+                        <button class="_hide _film-row-annule" id="<%= film.id %>">Annuler</button>
+                        <button class="_hide _film-row-update" id="<%= film.id %>">Valider</button>
+                        <button class="_show _film-row-edit" id="<%= film.id %>">Editer</button>
+                        <button class="_row-film-delete" id="<%= film.id %>">Supprimer</button>
+                      </span>
+                    </td>
+                    </tr>
+            <% } %>
+          </tbody>
+        </table>
+          </div>
+        </div>
+          <div class="row _mt20" style="margin-top: 20px">
+            <form class="col-md-12" id="formId">
+              <label for="title">Titre</label>
+              <input type="text" name="title" id="title">
+              <label for="year">Année</label>
+              <input type="text" name="year" id="year">
+              <button type="submit">Ajouter</button>
+            </form>
+          </div>
+      </div>
+      <% include ./partials/footer.ejs %>
+
+      <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+      <script type="text/javascript" src="../public/css/bootstrap/js/bootstrap.min.js"></script>
+
+      <script type="text/javascript">
+        const form = document.querySelector('form');
+        $('form').on('submit',function(event){
+          event.preventDefault();
+          console.log('action submit');
+          var titleId = $('#title').val();
+          var yearId = $('#year').val();
+          console.log('titleId = ', titleId);
+          console.log('yearId = ', yearId);
+
+          $.ajax({
+            type:"POST",
+            url:"/films",
+            data:{title:$('#title').val(),year:$('#year').val()},
+            success:function(data){
+              console.log('data = ',data);
+              checkStatus();
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               alert("some error : ",errorThrown);
+            },
+            dataType:'text'
+          });
+
+          function checkStatus(){
+              let newFilmDiv = document.createElement('div');
+              const filmTitle = document.getElementById('title').value;
+              const filmYear = document.getElementById('year').value;
+              newFilmDiv.innerHTML = `${filmTitle} ${filmYear}`;
+              document.querySelector('.list-films').appendChild(newFilmDiv);
+              // form.reset();
+              document.getElementById('formId').reset();
+          };
+        });
+
+
+        //Evenement au click sur le bouton delete
+        $('._row-film-delete').click(function () {
+          var filmID = $(this).attr('id');
+          // alert("filmID :: " + filmID + " index = " + $(this).closest('td').parent()[0].sectionRowIndex);
+          // Appel ajax
+          $.ajax({
+            type:"POST",
+            url:"/api/film/delete",
+            data:{id:filmID},
+            success:function(data){
+              console.log('data = ',data);
+              supRow(filmID);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               alert("some error : ",errorThrown);
+            },
+            dataType:'text'
+          });
+      });
+
+      function supRow(id){
+        $('table .' + id).remove();
+      };
+
+      //Evenement au click sur le bouton Editer
+      $('._film-row-edit').click(function (e) {
+        var filmID = $(this).attr('id');
+
+        $(this).closest('td').parent()[0].bgColor = "#eee";
+        $(this).attr('class', '_hide _film-row-edit');
+
+        //hide les elements texte
+        console.log($(this).closest('td').parent()[0].cells);
+        var elementTitleToHide = $(this).closest('td').parent()[0].cells[0].children[0];
+        console.log('elementToHide = ', elementTitleToHide);
+        $(elementTitleToHide).attr('class', '_hide');
+
+        var inputTitleTShow = $(this).closest('td').parent()[0].cells[0].children[1];
+        $(inputTitleTShow).attr('class', '_show ' +filmID);
+
+
+        var elementYearToHide = $(this).closest('td').parent()[0].cells[1].children[0];
+        console.log('elementToHide = ', elementYearToHide);
+        $(elementYearToHide).attr('class', '_hide ' +filmID);
+        var inputyearTShow = $(this).closest('td').parent()[0].cells[1].children[1];
+        $(inputyearTShow).attr('class', '_show ' +filmID);
+
+        var btnAnnule = $(this).closest('td').parent()[0].cells[2].children[0].children[0];
+        console.log('btnAnnule = ', btnAnnule);
+        $(btnAnnule).attr('class', '_show _film-row-annule');
+
+        var btnUpdate = $(this).closest('td').parent()[0].cells[2].children[0].children[1];
+        $(btnUpdate).attr('class', '_show _film-row-update');
+
+      });
+
+      //Evenement au click sur le bouton Valider pour effectuer un update
+      $('._film-row-update').click(function (e) {
+        var filmID = $(this).attr('id');
+        //alert(filmID);
+        var inputTitle = $(this).closest('td').parent()[0].cells[0].children[1];
+        console.log('inputTitle = ',$(inputTitle).val());
+
+        var inputYear = $(this).closest('td').parent()[0].cells[1].children[1];
+        console.log('inputYear = ',$(inputYear).val());
+
+        //appel ajax
+        $.ajax({
+          type:"POST",
+          url:"/api/film/update",
+          data:{id: filmID,title:inputTitle,year:inputYear},
+          success:function(data){
+            console.log('data = ',data);
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert("some error : ",errorThrown);
+          },
+          dataType:'text'
+        });
+
+      });
+
+      </script>
+  </body>
+</html>

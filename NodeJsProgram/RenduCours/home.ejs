@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Ma liste de films préférés</title>
+        <style>
+            a {text-decoration: none; color: black;}
+        </style>
+    </head>
+
+    <body>
+        <h1>Mes films préférés</h1>
+
+        <ul>
+        <% todolist.forEach(function(todo, index) { %>
+            <li><a href="/films/delete/<%= index %>">✘</a> <%= todo %></li>
+        <% }); %>
+        </ul>
+
+        <form action="/films/add/" method="post">
+            <p>
+                <label for="newfilm">Liste de films</label>
+                <input type="text" name="newfilm" id="newfilm" autofocus />
+                <input type="submit" />
+            </p>
+        </form>
+    </body>
+</html>

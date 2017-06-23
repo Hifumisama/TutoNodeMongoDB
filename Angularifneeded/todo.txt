@@ -1,0 +1,2 @@
+Ici je dois implémenter le système d'inscription d'utilisateurs, ainsi que de connexion de l'utilisateur.
+Je dois également gérer la persistance des messages via mongoDB et Mongoose. 

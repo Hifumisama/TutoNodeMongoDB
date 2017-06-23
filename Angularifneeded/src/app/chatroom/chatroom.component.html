@@ -1,0 +1,6 @@
+<ul *ngFor="let message of messages">
+  <li>{{message.text}}</li>
+</ul>
+<label></label>
+<input [(ngModel)]="message"/>
+<button (click)="sendMessage()">Envoyer</button>
