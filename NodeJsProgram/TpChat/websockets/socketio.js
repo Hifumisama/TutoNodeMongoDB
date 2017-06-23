@@ -14,7 +14,7 @@ module.exports = function(io) {
     /* inversement, quand l'utilisateur veut se déconnecter, alors on
     le notifie également.*/
     console.log("Utilisateur connecté");
-
+    
     socket.on('disconnect', function() {
       console.log('Utilisateur déconnecté');
     });
@@ -25,9 +25,13 @@ module.exports = function(io) {
     socket.on('add-message', (message) => {
       /* Ajout de ma part, taut qu à faire autant rajouter un système de notification
       pour les messages envoyés au serveur. */
-      socket.broadcast.emit('notification', 'En maintenance');
+      socket.broadcast.emit('Notification', 'En maintenance');
 
       console.log("Nouveau message envoyé");
+      console.log("le message est : ");
+      messageToAdd = new Message(message);
+      console.log(messageToAdd);
+      messageService.addMessage(messageToAdd).then();
       /* Ie find all sert à chopper tous les messages envoyés par les utilisateurs */
       /* Ici on cale notre emit sans problème en utilisant le messageService */
       messageService.findAll().then(data => socket.emit('message', data));

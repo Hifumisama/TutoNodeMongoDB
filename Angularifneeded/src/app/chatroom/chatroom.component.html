@@ -1,5 +1,5 @@
-<ul *ngFor="let message of messages">
-  <li>{{message.text}}</li>
+<ul *ngFor="let message of (messagerie | async)">
+  <li>{{message.message_text}}</li>
 </ul>
 <label></label>
 <input [(ngModel)]="message"/>

@@ -9,7 +9,8 @@ import { SocketService } from '../service/socket.service';
   styleUrls: ['./chatroom.component.css']
 })
 export class ChatroomComponent implements OnInit, OnDestroy {
-  messages = [];
+  messagerie;
+  recupobs;
   connection;
   message;
   constructor(
@@ -21,17 +22,22 @@ export class ChatroomComponent implements OnInit, OnDestroy {
     via l'appel du service chatService, puis la méthode getMessages.
     Dès qu'il y a un changement dans l'observable on y place le changement dans un tableau contenant
     les messages (avec la méthode push) */
-    this.connection = this.chatService.getMessages().subscribe(message => { this.messages.push(message); });
+    console.log('page chargée');
+    this.messagerie = this.chatService.getMessages();
   }
   /*ici on apelle le service d'envoi de message vers le serveur, puis on vide la variable
   message (afin d'accueillir le message suivant de l'utilisateur).*/
   sendMessage(message) {
+    this.message = {
+      username: 'Anonymous',
+      message_text: this.message
+    }
     this.chatService.sendMessage(this.message);
     this.message = '';
   }
   /* On se désouscrit de la variable à observer afin d'éviter le problème du
   "memory leak" ou fuite de mémoire.*/
   ngOnDestroy() {
-    this.connection.unsubscribe();
+    this.messagerie.unsubscribe();
   }
 }

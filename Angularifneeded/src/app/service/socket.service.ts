@@ -17,7 +17,6 @@ export class SocketService {
       return () => { this.socket.disconnect(); };
     })
     return observable;
-
   }
   sendMessage(message) { this.socket.emit('add-message', message); console.log(message); }
 

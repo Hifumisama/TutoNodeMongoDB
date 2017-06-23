@@ -17,7 +17,6 @@ var messagesSchema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true
   },
   message_text: String,
   created_at: Date,
